@@ -18,6 +18,9 @@ class Category(models.Model):
     class Meta:
         verbose_name = verbose_name_plural = '分类'   # 中文不区分单复数
 
+    def __str__(self):
+        return self.name
+
 
 class Tag(models.Model):
     STATUS_NORMAL = 1
@@ -34,6 +37,9 @@ class Tag(models.Model):
 
     class Meta:
         verbose_name = verbose_name_plural = '标签'   # 中文不区分单复数
+
+    def __str__(self):
+        return self.name
 
 class Post(models.Model):
     STATUS_NORMAL = 1
