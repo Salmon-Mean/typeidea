@@ -92,7 +92,7 @@ class TagView(IndexView):
         queryset = super().get_queryset()
         tag_id = self.kwargs.get('tag_id')
 
-        return queryset.filter(tag_id=tag_id)
+        return queryset.filter(tag__id=tag_id)      # 反向查询
 
 
 class PostDetailView(CommonViewMixin, DetailView):
