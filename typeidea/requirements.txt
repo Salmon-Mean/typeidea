@@ -1,0 +1,9 @@
+asgiref==3.3.1
+beautifulsoup4==4.9.3
+Django==3.1.5
+django-bootstrap4==2.3.1
+importlib-metadata==2.1.1
+pytz==2020.5
+soupsieve==2.2
+sqlparse==0.4.1
+zipp==3.4.0

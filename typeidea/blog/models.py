@@ -1,5 +1,8 @@
+import mistune
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils.functional import cached_property
+
 
 class Category(models.Model):
     STATUS_NORMAL = 1
@@ -81,9 +84,15 @@ class Post(models.Model):
     pv = models.PositiveIntegerField(default=1)
     uv = models.PositiveIntegerField(default=1)
 
+    content_html = models.TextField(verbose_name="正文html代码", blank=True, editable=False)
+
     class Meta:
         verbose_name = verbose_name_plural = '文章'   # 中文不区分单复数
         ordering = ['-id']  # 根据id进行降序排序
+
+    @cached_property
+    def tags(self):
+        return ','.join(self.tag.values_list('name', flat=True))
 
     @staticmethod
     def get_by_tag(tag_id):
@@ -120,6 +129,13 @@ class Post(models.Model):
     @classmethod
     def hot_posts(cls):
         return cls.objects.filter(status=cls.STATUS_NORMAL).order_by('-pv')
+
+    def save(self, *args, **kwargs):
+        self.content_html = mistune.markdown(self.content)
+        super().save(*args, **kwargs)
+
+
+
 
 
 
