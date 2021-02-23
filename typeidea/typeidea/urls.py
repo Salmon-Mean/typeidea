@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, re_path
+from django.urls import path, re_path, include
 from django.contrib.sitemaps import views as sitemap_views
 
 from blog.views import (
@@ -26,6 +26,9 @@ from comment.views import CommentView
 
 from blog.rss import LastestPostFeed
 from blog.sitemap import PostSitemap
+from django.views.decorators.cache import cache_page
+
+from typeidea.settings import develop
 from .custom_site import custom_site
 
 urlpatterns = [
@@ -43,6 +46,12 @@ urlpatterns = [
     path('admin/', custom_site.urls, name='admin'),
 
     re_path(r'^rss|feed/', LastestPostFeed(), name='rss'),
-    re_path(r'^sitemap\.xml', sitemap_views.sitemap, {'sitemaps':{'posts':PostSitemap}}),
+    re_path(r'^sitemap\.xml', cache_page(60 * 20, key_prefix='sitemap_cache_')
+    (sitemap_views.sitemap), {'sitemaps':{'posts':PostSitemap}}),
 ]
 
+if develop.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        path('__debug__/', include(debug_toolbar.urls))
+    ] + urlpatterns
